@@ -1,11 +1,14 @@
 from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from posts.models import Post, Comment, Group
 from .mixins import ListCreateMixin
 from .serializers import PostSerializer, GroupSerializer
 
 
-class PostViewSet(ListCreateMixin):
+class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
