@@ -1,6 +1,6 @@
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework import viewsets, status
-from rest_framework.decorators import action
+
 from rest_framework.response import Response
 
 from posts.models import Post, Comment, Group
@@ -13,7 +13,6 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -33,10 +32,16 @@ class PostViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_403_FORBIDDEN)
         return super().destroy(request, *args, **kwargs)
 
+
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user != instance.author:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        return super().destroy(request, *args, **kwargs)
 
 class GroupViewSet(ReadOnlyModelViewSet):
     queryset = Group.objects.all()

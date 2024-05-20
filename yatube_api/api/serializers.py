@@ -12,6 +12,9 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    post = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all(), required=True)
+    created = serializers.DateTimeField(read_only=True)
+
     class Meta:
         model = Post
         fields = ('id', 'author', 'post', 'text', 'created')
