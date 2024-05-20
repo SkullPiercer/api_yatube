@@ -20,6 +20,12 @@ class CommentViewSet(IsAuthorMixin, viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
+    def list(self, request, *args, **kwargs):
+        post_id = kwargs.get('post_id')
+        queryset = self.queryset.filter(post_id=post_id)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 class GroupViewSet(ReadOnlyModelViewSet):
     queryset = Group.objects.all()
