@@ -1,10 +1,7 @@
-from rest_framework import mixins, viewsets
 from posts.models import Post, Comment, Group
+
+from .mixins import ListCreateMixin
 from .serializers import PostSerializer
-
-
-class ListCreateMixin(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
-    pass
 
 
 class PostViewSet(ListCreateMixin):
