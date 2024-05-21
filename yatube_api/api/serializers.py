@@ -13,14 +13,12 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    post = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all(), required=True)
-    created = serializers.DateTimeField(read_only=True)
     author = serializers.StringRelatedField(read_only=True)
 
     class Meta:
-        model = Post
+        model = Comment
         fields = ('id', 'author', 'post', 'text', 'created')
-        read_only_fields = ('id', 'created', 'author')
+        read_only_fields = ('id', 'created', 'author', 'post')
 
 
 class GroupSerializer(serializers.ModelSerializer):
