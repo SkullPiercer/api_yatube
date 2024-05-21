@@ -4,8 +4,8 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 
 from .mixins import IsAuthorMixin
-from posts.models import Post, Comment, Group
-from .serializers import CommentSerializer, PostSerializer, GroupSerializer
+from posts.models import Comment, Post, Group
+from .serializers import CommentSerializer, GroupSerializer, PostSerializer
 
 
 class PostViewSet(IsAuthorMixin, viewsets.ModelViewSet):
@@ -21,7 +21,8 @@ class CommentViewSet(IsAuthorMixin, viewsets.ModelViewSet):
     serializer_class = CommentSerializer
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user, post=self.kwargs['post_id'])
+        post = Post.objects.get(id=self.kwargs['post_id'])
+        serializer.save(author=self.request.user, post=post)
 
     def list(self, request, *args, **kwargs):
         post_id = kwargs.get('post_id')
