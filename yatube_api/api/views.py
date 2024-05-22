@@ -1,6 +1,6 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework import viewsets
-
 from rest_framework.response import Response
 
 from .mixins import IsAuthorMixin
@@ -21,14 +21,13 @@ class CommentViewSet(IsAuthorMixin, viewsets.ModelViewSet):
     serializer_class = CommentSerializer
 
     def perform_create(self, serializer):
-        post = Post.objects.get(id=self.kwargs['post_id'])
+        post = get_object_or_404(Post, id=self.kwargs['post_id'])
         serializer.save(author=self.request.user, post=post)
 
-    def list(self, request, *args, **kwargs):
-        post_id = kwargs.get('post_id')
-        queryset = self.queryset.filter(post_id=post_id)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        post_id = self.kwargs.get('post_id')
+        post = get_object_or_404(Post, id=post_id)
+        return Comment.objects.filter(post=post)
 
 
 class GroupViewSet(ReadOnlyModelViewSet):
