@@ -1,7 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework import viewsets
-from rest_framework.response import Response
 
 from .mixins import IsAuthorMixin
 from posts.models import Comment, Post, Group
