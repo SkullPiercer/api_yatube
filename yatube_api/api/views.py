@@ -7,6 +7,10 @@ from posts.models import Comment, Post, Group
 from .serializers import CommentSerializer, GroupSerializer, PostSerializer
 
 
+def get_post(post_id):
+    return get_object_or_404(Post, id=post_id)
+
+
 class PostViewSet(IsAuthorMixin, viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -20,13 +24,12 @@ class CommentViewSet(IsAuthorMixin, viewsets.ModelViewSet):
     serializer_class = CommentSerializer
 
     def perform_create(self, serializer):
-        post = get_object_or_404(Post, id=self.kwargs['post_id'])
+        post = get_post(self.kwargs['post_id'])
         serializer.save(author=self.request.user, post=post)
 
     def get_queryset(self):
-        post_id = self.kwargs.get('post_id')
-        post = get_object_or_404(Post, id=post_id)
-        return Comment.objects.filter(post=post)
+        post = get_post(self.kwargs.get('post_id'))
+        return post.comments.all()
 
 
 class GroupViewSet(ReadOnlyModelViewSet):
